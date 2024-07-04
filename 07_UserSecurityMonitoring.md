@@ -24,26 +24,26 @@
 
 #### Brute Force
  
-(_sourceCategory=Labs/OS/Linux/Security)
-| timeslice 30m
-| parse ": * password for * from * port * ssh2" as status,user,ip,port
+    (_sourceCategory=Labs/OS/Linux/Security)
+    | timeslice 30m
+    | parse ": * password for * from * port * ssh2" as status,user,ip,port
 
 <img width="720" alt="image" src="https://github.com/gabizzle/Intrusion-Detection/assets/67624149/b1bcc3c3-de4f-4f63-abb6-47bf0f4bcba5">
 
-(_sourceCategory=Labs/OS/Linux/Security )
-| timeslice 30m
-| parse ": * password for * from * port * ssh2" as status,user,ip,port
-| where status = "Failed"
+    (_sourceCategory=Labs/OS/Linux/Security )
+    | timeslice 30m
+    | parse ": * password for * from * port * ssh2" as status,user,ip,port
+    | where status = "Failed"
 
 <img width="720" alt="image" src="https://github.com/gabizzle/Intrusion-Detection/assets/67624149/78beff6b-8b77-40eb-9e78-27b983e2796b">
 
-(_sourceCategory=Labs/OS/Linux/Security )
-| timeslice 30m
-| parse ": * password for * from * port * ssh2" as status,user,ip,port
-| where status = "Failed"
-| count by _timeslice, user,status,ip,port
-| where _count < 50
-| sort by _count
+    (_sourceCategory=Labs/OS/Linux/Security )
+    | timeslice 30m
+    | parse ": * password for * from * port * ssh2" as status,user,ip,port
+    | where status = "Failed"
+    | count by _timeslice, user,status,ip,port
+    | where _count < 50
+    | sort by _count
 
 <img width="720" alt="image" src="https://github.com/gabizzle/Intrusion-Detection/assets/67624149/fa505689-267a-49d4-b1f8-dbd60b8b6403">
 
