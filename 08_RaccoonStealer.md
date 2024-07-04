@@ -5,8 +5,13 @@
 In 2019, a Ukrainian named Mark Sokolovsky and others not named created a malware-as-a-service called Raccoon Stealer. Telsy refers a malware-as-a-service (MaaS) as “the illegal lease of software and hardware for carrying out cyber-attacks.” Raccoon Stealer debuted in 2019 that is capable of stealing passwords, credit card numbers, email addresses, cryptocurrency addresses, and bank account details from its victims. To use this MaaS, customers (considered cybercriminals) could access this service for $200 per month or $75 per week. The Justice Department confirmed that Raccoon Stealer would arrive as phishing emails, such as fake messages about COVID-19. The victims who believe these emails and messages get malicious code installed on their devices.
 
 Mark Sokolovsky was recently arrested in the Netherlands, and the service was later shut down in March 2022. However, the second version of the Raccoon Stealer existed again in mid-2022 July called RecordBreaker. In addition to the first version’s capabilities, RecordBreaker can download from the Internet or browser: login and password credentials, cookies, cryptocurrency wallets, and arbitrary files on a device. Much information stolen is from auto-fill data from logins, passwords, and activities. It is believed that more than 50 million pieces of stolen information were sold to the dark web marketplace.
+
+<div align="center">
  
-**Figure 1 – An example of a Raccoon Stealer malicious email.**
+ #### Figure 1 – An example of a Raccoon Stealer malicious email.
+ <img width="500" alt="image" src="https://github.com/gabizzle/Intrusion-Detection/assets/67624149/8158c6e5-7957-4c56-ab90-981977a18451">
+
+</div>
 
 ### Capabilities
 
