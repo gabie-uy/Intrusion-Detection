@@ -1,58 +1,71 @@
 # Cloud Security Monitoring
 
-- Cloud security focuses on the security of data in cloud computing systems. Cloud computing systems lets organizations and businesses store data, applications, and platforms in an online infrastructure. This is used by small companies, medium, and the enterprise. It is important to secure the cloud because of the many organizations that depend on such system.
+## 📝 Activity
 
-- Defined by Amazon, “Amazon Simple Storage Service (Amazon S3) is an object storage service that offers industry-leading scalability, data availability, security, and performance. Customers of all sizes and industries can use Amazon S3 to store and protect any amount of data for a range of use cases, such as data lakes, websites, mobile applications, backup and restore, archive, enterprise applications, IoT devices, and big data analytics. Amazon S3 provides management features so that you can optimize, organize, and configure access to your data to meet your specific business, organizational, and compliance requirements.” S3 offers different storage management features that help organize data. They also offer different access management features that help in securing and managing the system.
+This activity simulates a security investigation of AWS infrastructure. The analyst identified key security misconfigurations in region access, S3 policies, and ACL entries.
 
-- As a SOC analyst, I would ask the company if they can provide common protocols to use and have trainings to provide to be able to learn and understand certain scenarios. Learning these protocols and experiences of past analysts or current analysts can help to mitigate errors that can occur with plugging in wrong inputs and codes. Experiences are hard to learn and it would be easier to ask for help from seniors or those who have dealt with such situations in the past. Open-sources may help but is not initially ideal in the workplace. However, it may be able to help in giving an idea due to the similarities many companies experience. 
+### AWS Region Usage
 
-- I believe that the criticality of access management problems should be the top priority. This will allow unauthorized access to be able to control majority of the system. They can view, edit and “manage” the entire enterprise because of having access to the system. To be specific, it is more important to begin assessing and checking administrative accesses that allows users to be able to control and command majority of the system, as compared to those roles below the administrative department. I would believe that roles below the administrative department would have less impact in the company as a whole due to less access in the system.
+**Query:**
 
-- In conclusion, mitigating these attacks will always come with knowledge and constant learning and development to understand how to tackle these attacks. It is a constant chess like game where both entities or parties continue to find a new way to defeat the opponent. New attacks would require new ways to secure, and conquer them –they are inevitable but not impossible to address.
+![AWS Regions](https://github.com/gabizzle/Intrusion-Detection/assets/67624149/e7eae27f-33c3-4dfc-86c6-0db4a86f2ce8)
 
-## Figures
-### AWS Regions
- 
+_Extracts AWS region activity from logs._
+
+    _sourceCategory=*AWS* awsregion 
+    | json auto
+
+![Non-US Regions](https://github.com/gabizzle/Intrusion-Detection/assets/67624149/ff958c91-16ab-474f-9521-a7eab4ad3727)
+
+_Filters for non-US region activity._
+
+    _sourceCategory=*AWS* awsregion 
+    | json auto
+    | where !(awsregion matches "*us*")
+
+![Account-Level Region Activity](https://github.com/gabizzle/Intrusion-Detection/assets/67624149/7bbc1f81-d2f7-41c6-b280-94d240ae2f99)
+
+_Identifies user activity in unauthorized regions._
+
     _sourceCategory=*AWS* awsregion 
     | json auto 
-
-<img width="720" alt="image" src="https://github.com/gabizzle/Intrusion-Detection/assets/67624149/e7eae27f-33c3-4dfc-86c6-0db4a86f2ce8">
-     
-    _sourceCategory=*AWS* awsregion
-    | json auto
     | where !(awsregion matches "*us*") 
-    
-<img width="720" alt="image" src="https://github.com/gabizzle/Intrusion-Detection/assets/67624149/ff958c91-16ab-474f-9521-a7eab4ad3727">
-     
-    _sourceCategory=*AWS* awsregion | json auto
-    | where !(awsregion matches "*us*") | where !(isNull(awsregion)) 
+    | where !(isNull(awsregion)) 
     | count by %"userIdentity.accountId", %"userIdentity.userName", awsregion 
-    
-<img width="720" alt="image" src="https://github.com/gabizzle/Intrusion-Detection/assets/67624149/7bbc1f81-d2f7-41c6-b280-94d240ae2f99">
 
-### Vulnerable Network ACLs 
- 
+### Vulnerable Network ACL Entries
+
+![ACL Entry Creation](https://github.com/gabizzle/Intrusion-Detection/assets/67624149/62d89e49-7ed9-4090-9bc3-e8ed4ad87800)
+
+ _Detects when new ACL entries are created._
+
     _sourceCategory = *AWS*
     | json auto
     | where eventname = "CreateNetworkAclEntry"
-    
- <img width="720" alt="image" src="https://github.com/gabizzle/Intrusion-Detection/assets/67624149/62d89e49-7ed9-4090-9bc3-e8ed4ad87800">
-       
+
+![Allow ACL Rules](https://github.com/gabizzle/Intrusion-Detection/assets/67624149/6d86333d-0bae-4553-ad3c-34fc11faa224)
+
+_Identifies ACL entries that allow all traffic._
+
     _sourceCategory = *AWS*
     | json auto
     | where eventname = "CreateNetworkAclEntry"
     | where %requestParameters.ruleAction = "allow"
-    
-<img width="720" alt="image" src="https://github.com/gabizzle/Intrusion-Detection/assets/67624149/6d86333d-0bae-4553-ad3c-34fc11faa224">
-     
+
+![Full Port Range ACLs](https://github.com/gabizzle/Intrusion-Detection/assets/67624149/fa5c0398-95c2-4a23-b9fc-158370592045)
+
+_Flags ACLs allowing traffic on all ports (0-65535)._
+
     _sourceCategory = *AWS*
     | json auto
     | where eventname = "CreateNetworkAclEntry"
     | where %requestParameters.ruleAction = "allow"
     | where %requestParameters.portRange.from = 0 and %requestParameters.portRange.to = 65535
- 
-<img width="720" alt="image" src="https://github.com/gabizzle/Intrusion-Detection/assets/67624149/fa5c0398-95c2-4a23-b9fc-158370592045">
-    
+
+![Open CIDR ACL Rules](https://github.com/gabizzle/Intrusion-Detection/assets/67624149/b2546e7b-7442-4eb0-85b2-fa0b061f07d3)
+
+_Lists dangerous ACLs open to all IPs and ports._
+
     _sourceCategory = *AWS*
     | json auto
     | where eventname = "CreateNetworkAclEntry"
@@ -60,8 +73,67 @@
     | where %requestParameters.portRange.from = 0 and %requestParameters.portRange.to = 65535
     | count by eventname,%requestParameters.ruleAction,%requestParameters.portRange.from, %requestParameters.portRange.to, %"requestParameters.cidrBlock"
 
-<img width="720" alt="image" src="https://github.com/gabizzle/Intrusion-Detection/assets/67624149/b2546e7b-7442-4eb0-85b2-fa0b061f07d3">
+## ⚠️ Threat Simulation
 
-## References
-- https://usa.kaspersky.com/resource-center/definitions/what-is-cloud-security
-- https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html 
+### SOC Analyst Response Process
+
+1. **Detection**: Identified suspicious AWS activity and ACL rules.
+2. **Analysis**: Queried CloudTrail logs for region and network access anomalies.
+3. **Triage**: Prioritized alerts based on risk level and exposure potential.
+4. **Escalation**: Flagged dangerous misconfigurations to DevOps/Cloud teams.
+5. **Remediation Advice**: Recommended access restrictions and policy audits.
+
+### 🚨 Alert Criticality
+
+| Alert                                  | Description                                                  | Criticality |
+|----------------------------------------|--------------------------------------------------------------|-------------|
+| **Non-US Region Activity**             | Indicates misconfigured or unauthorized access.              | 🔶 Medium    |
+| **S3 Access Mismanagement**            | Potential for data exposure via misconfigured roles.         | 🔴 High      |
+| **Overly Permissive Network ACLs**     | Open port ranges to all IPs expose infrastructure.           | 🔴 High      |
+
+---
+
+## 💼 Business Implications
+
+### 🔍 Impact on the Business
+
+- **Compliance risks** (e.g., GDPR, HIPAA, SOC 2)
+- **Service disruption** due to unauthorized access
+- **Reputational damage** in case of data leak or breach
+
+### 📉 Short-Term Risks
+
+- Data exfiltration through open ACLs or S3 buckets
+- Unauthorized infrastructure changes
+- Emergency remediation causing service interruptions
+
+### 📈 Long-Term Risks
+
+- Persistent threats due to poor IAM practices
+- Regulatory fines and increased audit scrutiny
+- Reduced customer confidence in cloud security
+
+## 🛍 Enterprise Actions
+
+### 🧹 Synthesize the Investigation & Its Implications
+
+- **IAM access**, **network policy misconfigurations**, and **region drift** expose critical flaws.
+- Highlights lack of enforcement for cloud governance and security baselines.
+
+### 🛠 Holistic Remediation Plan
+
+| Action Item                                          | Team                    | Priority | Status        |
+|------------------------------------------------------|--------------------------|----------|---------------|
+| Enforce AWS SCPs for region control                  | Cloud Governance         | High     | 🔄 In Progress |
+| Audit IAM permissions for overprivileged users       | IAM Security Team        | High     | ⏳ Planned     |
+| Remove wide-open ACL rules (0–65535, 0.0.0.0/0)      | Network Engineering      | High     | ✅ Complete    |
+| Enforce S3 bucket policy best practices              | Cloud Platform Team      | High     | 🔄 In Progress |
+| Deploy AWS Config Rules for policy monitoring        | Cloud Security Team      | Medium   | 🔄 In Progress |
+| Launch AWS security training initiative              | Security Awareness Team  | Medium   | ⏳ Planned     |
+
+---
+
+## 🔗 References
+
+- [Kaspersky – What is Cloud Security](https://usa.kaspersky.com/resource-center/definitions/what-is-cloud-security)  
+- [AWS S3 Documentation](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html)
