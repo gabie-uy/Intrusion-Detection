@@ -1,5 +1,8 @@
 # Investigating Web Application Attacks
 
+#### Table of Contents
+[What Does the Enterprise Do Next?](https://github.com/gabie-uy/Intrusion-Detection/edit/main/01_InvestigatingWebAppAttacks.md#what-does-the-enterprise-do-next)
+
 A structured approach to examining web app attacks—identifying vulnerabilities, following attack trails, and deploying tools to uncover, analyze, and attribute malicious behavior.
 
 ### Attributes
@@ -233,3 +236,53 @@ Implement automated alerting for:
 - Regularly review access logs and update detection rules quarterly.
 - Educate DevOps and security teams on emerging exploit vectors.
 
+## What Does the Enterprise Do Next?
+
+### Synthesize the Investigation and Its Implications
+
+The investigation revealed that the web application was actively being probed and targeted by:
+
+- Exploit attempts (e.g., Shellshock via user-agent injection)
+- Reconnaissance scans (high `404 Not Found` errors)
+- Bot-driven scraping or brute-force activity (high `200 OK` volume)
+- Known malicious IPs (matched via threat intelligence lookup)
+
+These findings indicate a combination of opportunistic and targeted threats, pointing to weaknesses in real-time detection, rate-limiting, and external threat feed integration.
+
+### Remediation Plan
+
+#### 1. Technology Controls
+- Implement automated detection rules in the SIEM for:
+  - Shellshock-style payloads
+  - Abnormal HTTP status patterns
+  - Request spikes from a single source
+- Integrate live threat intelligence feeds with automated blocking.
+- Strengthen WAF (Web Application Firewall) rules to block injection and high-volume scans.
+- Apply CAPTCHA and rate-limiting to deter scraping or brute-force behavior.
+
+#### 2. Infrastructure Hardening
+- Patch all vulnerable services, especially Bash-based systems.
+- Remove or protect endpoints frequently hit during 404 scans.
+- Configure Apache to throttle or block abusive IPs.
+
+#### 3. Security Operations Improvements
+- Define alert severity levels and build triage SOPs.
+- Convert this incident into a reusable threat hunting playbook.
+- Enrich log pipelines with geo-IP, ASN, and threat metadata.
+
+#### 4. Organizational Resilience
+- Train SOC and DevOps teams on emerging exploit signatures.
+- Conduct red team/blue team exercises to test readiness.
+- Update internal security policies to reflect post-incident learnings.
+
+#### 5. Long-Term Monitoring and Audit
+- Establish periodic audits of Apache logs, WAF policies, and detection rules.
+- Deploy anomaly detection tools for ongoing behavioral monitoring.
+
+### Outcome
+
+By implementing these remediations, the enterprise will:
+
+- Improve time-to-detection and response to real-time threats.
+- Reduce attack surface and exploitability of public-facing systems.
+- Protect customer trust and ensure long-term business continuity.
