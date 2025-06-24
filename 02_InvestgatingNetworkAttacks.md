@@ -1,8 +1,8 @@
 # 🛡️ Investigating Network Attacks
 
-## 📌 Abstract
-
 With the increasing use of public and private networks, the risk of exploitation by malicious actors has grown significantly. Attackers can infiltrate organizations and disrupt services, often leveraging foundational attacks that have evolved over time. This report discusses three key types of network attacks, analyzing their impact, methods of detection, and mitigation strategies.
+
+## Activity
 
 ### Network Attacks Covered
 
@@ -40,8 +40,6 @@ Port scanning is a reconnaissance technique used to identify open, closed, or fi
 - Regularly audit and update security systems.
 - Monitor for suspicious traffic patterns.
 
----
-
 ### 2. Slammer Worm
 
 The Slammer Worm is a fast-spreading worm that exploited vulnerabilities in Microsoft SQL Server, leading to denial-of-service (DoS) conditions.
@@ -63,8 +61,6 @@ The Slammer Worm is a fast-spreading worm that exploited vulnerabilities in Micr
 - Keep systems and software up to date.
 - Implement anti-virus/anti-malware solutions.
 - Educate users on safe email and network practices.
-
----
 
 ### 3. Zeus Command and Control
 
@@ -92,7 +88,7 @@ Zeus is a malware toolkit used to create botnets aimed at stealing banking infor
 
 ---
 
-## 📸 Figures
+## Threat Simulation
 
 ### 🔎 Port Scanning
 
@@ -129,6 +125,106 @@ Zeus is a malware toolkit used to create botnets aimed at stealing banking infor
 
 **Figure 3.4** – HTTP Request  
 ![Zeus HTTP 2](https://github.com/gabizzle/Intrusion-Detection/assets/67624149/7478d416-6d64-4cfd-99f6-40df43094391)
+
+### Post-Incident Analysis Report
+
+#### 🔥 Incident Summary
+
+Between [insert date range], the organization experienced multiple network anomalies and security alerts indicating malicious behavior. These included:
+
+- **Port scanning activities** targeting various system ports.
+- Evidence of the **Slammer worm** attempting denial-of-service (DoS) attacks via UDP packets.
+- **Zeus Command and Control (C2) traffic** indicating botnet activity and potential credential theft.
+
+The incidents were detected through IDS alerts, anomalous traffic volume, unauthorized access attempts, and endpoint slowdowns. Immediate containment and investigation procedures were initiated.
+
+#### 🧾 Indicators of Compromise (IOCs)
+
+| Type              | IOC Details                                          |
+|-------------------|------------------------------------------------------|
+| IP Addresses      | Unknown external IPs with abnormal port scan traffic |
+| Ports             | Ports 1433 (SQL), 80, 443, 21, 23                     |
+| Protocols         | TCP, UDP, HTTP                                       |
+| Malware Signature | Slammer hex pattern, Zeus executable hash            |
+| Behavior Patterns | Repeated pings, malformed HTTP requests, keylogging  |
+| Destinations      | Outbound connections to known malicious C2 servers   |
+
+#### ⚠️ Alert Criticality Table
+
+| Alert Type            | Criticality | Rationale                                                                 |
+|-----------------------|-------------|---------------------------------------------------------------------------|
+| Port Scanning         | Medium      | May precede a targeted attack; requires prompt investigation              |
+| Slammer Worm Activity | High        | Can result in DoS, disrupt services, and exploit vulnerable SQL ports     |
+| Zeus C2 Communication | Critical    | Involves credential theft and botnet control; high impact and persistence |
+
+#### ✅ Actions Taken
+
+- Isolated affected endpoints from internal networks.
+- Updated firewall rules to block malicious IPs and restrict unused ports.
+- Deployed endpoint detection and response (EDR) tools across high-risk assets.
+- Collected PCAPs and logs for forensic analysis.
+- Patched vulnerable services (e.g., MS SQL Server).
+- Quarantined suspicious files and disabled suspicious user accounts.
+- Sent alert to all users about potential phishing attempts.
+
+#### 🧠 Root Cause Analysis
+
+| Incident Component      | Root Cause                                                               |
+|-------------------------|--------------------------------------------------------------------------|
+| Port Scanning           | Lack of strict external access controls and exposed unused ports.        |
+| Slammer Worm Attempt    | Unpatched SQL Server instances vulnerable to buffer overflow exploits.   |
+| Zeus Botnet Activity    | User clicked phishing email attachment, leading to malware installation. |
+
+#### 📘 Lessons Learned
+
+- **User awareness is critical** — The Zeus infection originated from human error (email click).
+- **Legacy systems remain a risk** — Slammer exploited outdated SQL infrastructure.
+- **Proactive monitoring** — Earlier detection would have prevented malware persistence.
+- **IOCs must be correlated** — Multi-stage attacks require cross-system visibility and context.
+
+#### ✅ Recommendations
+
+- Implement **network segmentation** to isolate critical assets.
+- Enforce **least privilege access** and remove default or unused service accounts.
+- Conduct **regular patch management cycles**, particularly on legacy systems.
+- Roll out **mandatory security awareness training** for all employees.
+- Enable **advanced threat detection tools** (e.g., EDR, anomaly-based NIDS).
+- Establish a **threat-hunting program** to proactively detect stealthy threats.
+
+---
+
+## Business Implications
+
+The investigation uncovered a coordinated pattern of probing, malware propagation, and C2 communication—indicating a likely prelude to a larger campaign. The combination of Slammer and Zeus suggests a hybrid threat model: one designed to destabilize (worm) and one to extract sensitive data (botnet).
+
+> **Implication**: Without aggressive remediation, the organization risks system compromise, customer data loss, financial theft, and reputational damage.
+
+### Business Impact (Long-term & Short-term)
+
+#### 📉 Short-Term Business Implications
+- **Operational Downtime:** Systems may need to be taken offline for patching and forensic analysis.
+- **Resource Disruption:** IT teams are pulled away from other tasks to focus on incident response.
+- **Customer Trust Impact:** Clients may become temporarily concerned if disruptions are public-facing.
+- **Increased Cost:** Emergency response may require third-party consultants or overtime resources.
+
+#### 📈 Long-Term Business Implications
+- **Brand and Reputation Damage:** Persistent security issues erode customer trust and industry credibility.
+- **Regulatory Exposure:** Potential compliance violations (e.g., GDPR, HIPAA) may result in audits or fines.
+- **Financial Impact:** Loss of business, legal liabilities, and the cost of upgrading infrastructure.
+- **Increased Insurance Premiums:** Cyber insurance rates may rise due to breach history.
+- **Strategic Realignment:** Security maturity will become a top board-level priority, influencing IT roadmaps.
+
+
+## Enterprise Actions
+
+| Remediation Step                         | Status      | Outcome                                                              |
+|------------------------------------------|-------------|----------------------------------------------------------------------|
+| System patching                          | ✅ Completed | Vulnerabilities closed on SQL and exposed services                   |
+| User credential reset                    | ✅ Completed | Reset compromised and high-risk user credentials                     |
+| Network hardening                        | ✅ Completed | Firewall, port filtering, segmentation rules enforced                |
+| Security tools deployment                | ✅ Completed | EDR deployed to high-value systems                                   |
+| User awareness campaign                  | 🔄 Ongoing  | Company-wide phishing awareness training scheduled                   |
+| IOC blocklisting across infrastructure   | ✅ Completed | Prevented future C2 and worm activity                                |
 
 ---
 
