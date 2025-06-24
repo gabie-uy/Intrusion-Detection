@@ -1,7 +1,15 @@
 # Investigating Web Application Attacks
 
+---
+
 #### Table of Contents
-[What Does the Enterprise Do Next?](https://github.com/gabie-uy/Intrusion-Detection/edit/main/01_InvestigatingWebAppAttacks.md#what-does-the-enterprise-do-next)
+> 1. Activity
+> 2. Threat Simulation
+> 3. Response
+>   - Post-Incident Report
+>   - What Does the Enterprise Do Next?
+
+---
 
 A structured approach to examining web app attacks—identifying vulnerabilities, following attack trails, and deploying tools to uncover, analyze, and attribute malicious behavior.
 
