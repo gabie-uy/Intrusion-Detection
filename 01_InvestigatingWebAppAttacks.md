@@ -185,6 +185,7 @@ _Matches IPs against threat intelligence to detect known malicious actors._
 
 - Shows only IPs confirmed to have a threat level assigned.
 
+---
 
 ## Threat Simulation 
 
@@ -243,6 +244,17 @@ Implement automated alerting for:
 - Apply CAPTCHA or bot filtering for suspicious user-agent behavior.
 - Regularly review access logs and update detection rules quarterly.
 - Educate DevOps and security teams on emerging exploit vectors.
+
+### Critical Alerts and Severity Ratings
+
+| Alert Name                      | Description                                                                 | Detection Method / Query Snippet                                  | Criticality | Rationale                                                                                   |
+|--------------------------------|-----------------------------------------------------------------------------|--------------------------------------------------------------------|-------------|---------------------------------------------------------------------------------------------|
+| **Shellshock Exploit Attempt** | Detects command injection via user-agent string resembling Shellshock.     | `user_agent matches "*() { :; }*"`                                 | Critical    | High-risk RCE vulnerability. Exploitation can lead to full system compromise.              |
+| **Excessive 404 Errors**       | Flags reconnaissance attempts via repeated 404 (Not Found) HTTP responses. | `status_code = "404"` + aggregation over `src_ip`, `user_agent`   | High        | Common behavior in vulnerability scanning or directory brute-forcing.                      |
+| **High Volume 200 OK Hits**    | Detects scraping or brute force by identifying high success rates.         | `status_code = "200"` + `where _count > 50`                        | High        | Abnormal success patterns may indicate bot scraping or password spraying attacks.          |
+| **Threat Intelligence Match**  | Matches source IPs against known malicious actors.                         | `lookup ... from sumo://threat/cs` + `where !(isNull(threatlevel))`| Critical    | Involves confirmed threat actors—must be acted on immediately to prevent further intrusion. |
+
+---
 
 ## What Does the Enterprise Do Next?
 
