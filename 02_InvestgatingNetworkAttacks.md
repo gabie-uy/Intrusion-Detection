@@ -1,20 +1,37 @@
-# 🛡️ Investigating Network Attacks
+# Investigating Network Attacks
 
-With the increasing use of public and private networks, the risk of exploitation by malicious actors has grown significantly. Attackers can infiltrate organizations and disrupt services, often leveraging foundational attacks that have evolved over time. This report discusses three key types of network attacks, analyzing their impact, methods of detection, and mitigation strategies.
+**OVERVIEW:** With the increasing use of public and private networks, the risk of exploitation by malicious actors has grown significantly. Attackers can infiltrate organizations and disrupt services, often leveraging foundational attacks that have evolved over time. This report discusses three key types of network attacks, analyzing their impact, methods of detection, and mitigation strategies.
+
+#### TABLE OF CONTENTS
+
+1. Activity
+   - Review
+   - Exercise (Scripts, Figures, etc.)
+2. Threat Simulation
+   - SOC Report/Post-Incident Report
+     - Incident Summary
+     - Indicators of Compromise
+     - Critical Alerts and Severity Ratings (Alert Name, Description, Detection Method/Query Snippet, Criticality, Rationale)
+     - Actions Taken
+     - Root Cause Analysis
+     - Lessons Learned
+     - Recommendations
+3. Business Implications
+   - Synthesize the Investigation
+   - Long-term and Short-term Risks
+   - Remediation Plan
 
 ## Activity
 
 ### Network Attacks Covered
 
-1. **Port Scanning**
-2. **Worms – Slammer**
-3. **Command and Control – Zeus**
+1. Port Scanning
+2. Worms – Slammer
+3. Command and Control – Zeus
 
 > _The report examines how enterprises can respond to these threats, assess their severity, evaluate their impact on operations, and develop remediation strategies._
 
----
-
-## 🔍 Three Network Attacks
+## Three Network Attacks
 
 ### 1. Port Scanning
 
@@ -90,7 +107,7 @@ Zeus is a malware toolkit used to create botnets aimed at stealing banking infor
 
 ## Threat Simulation
 
-### 🔎 Port Scanning
+### Port Scanning
 
 **Figure 1.1** – Threat Analysis  
 ![Port Scanning 1](https://github.com/gabizzle/Intrusion-Detection/assets/67624149/f362e47e-4ce0-4976-b892-3c0b1ef86520)
@@ -101,7 +118,7 @@ Zeus is a malware toolkit used to create botnets aimed at stealing banking infor
 **Figure 1.3** – Summary  
 ![Port Scanning Summary](https://github.com/gabizzle/Intrusion-Detection/assets/67624149/5a66c611-02d4-474e-a04a-ea366ac36016)
 
-### 🧬 Slammer Worm
+### Slammer Worm
 
 **Figure 2.1** – Hex Dump  
 ![Slammer Hex](https://github.com/gabizzle/Intrusion-Detection/assets/67624149/77913cbc-8f6b-4250-b276-15a01615e8ed)
@@ -112,7 +129,7 @@ Zeus is a malware toolkit used to create botnets aimed at stealing banking infor
 **Figure 2.3** – Threat Analysis  
 ![Slammer Analysis](https://github.com/gabizzle/Intrusion-Detection/assets/67624149/68cbc358-4d8b-47ba-a3bd-967736cdec50)
 
-### 🕵️ Zeus Command & Control
+### Zeus Command & Control
 
 **Figure 3.1** – Destination Port Packets  
 ![Zeus Packets](https://github.com/gabizzle/Intrusion-Detection/assets/67624149/850101ff-df30-4937-b73d-08ae87cd9b05)
@@ -128,9 +145,9 @@ Zeus is a malware toolkit used to create botnets aimed at stealing banking infor
 
 ### Post-Incident Analysis Report
 
-#### 🔥 Incident Summary
+#### Incident Summary
 
-Between [insert date range], the organization experienced multiple network anomalies and security alerts indicating malicious behavior. These included:
+The organization experienced multiple network anomalies and security alerts indicating malicious behavior. These included:
 
 - **Port scanning activities** targeting various system ports.
 - Evidence of the **Slammer worm** attempting denial-of-service (DoS) attacks via UDP packets.
@@ -138,7 +155,7 @@ Between [insert date range], the organization experienced multiple network anoma
 
 The incidents were detected through IDS alerts, anomalous traffic volume, unauthorized access attempts, and endpoint slowdowns. Immediate containment and investigation procedures were initiated.
 
-#### 🧾 Indicators of Compromise (IOCs)
+#### Indicators of Compromise (IOCs)
 
 | Type              | IOC Details                                          |
 |-------------------|------------------------------------------------------|
@@ -149,7 +166,7 @@ The incidents were detected through IDS alerts, anomalous traffic volume, unauth
 | Behavior Patterns | Repeated pings, malformed HTTP requests, keylogging  |
 | Destinations      | Outbound connections to known malicious C2 servers   |
 
-#### ⚠️ Alert Criticality Table
+#### Alert Criticality Table
 
 | Alert Type            | Criticality | Rationale                                                                 |
 |-----------------------|-------------|---------------------------------------------------------------------------|
@@ -157,7 +174,7 @@ The incidents were detected through IDS alerts, anomalous traffic volume, unauth
 | Slammer Worm Activity | High        | Can result in DoS, disrupt services, and exploit vulnerable SQL ports     |
 | Zeus C2 Communication | Critical    | Involves credential theft and botnet control; high impact and persistence |
 
-#### ✅ Actions Taken
+#### Actions Taken
 
 - Isolated affected endpoints from internal networks.
 - Updated firewall rules to block malicious IPs and restrict unused ports.
@@ -167,7 +184,7 @@ The incidents were detected through IDS alerts, anomalous traffic volume, unauth
 - Quarantined suspicious files and disabled suspicious user accounts.
 - Sent alert to all users about potential phishing attempts.
 
-#### 🧠 Root Cause Analysis
+#### Root Cause Analysis
 
 | Incident Component      | Root Cause                                                               |
 |-------------------------|--------------------------------------------------------------------------|
@@ -175,14 +192,14 @@ The incidents were detected through IDS alerts, anomalous traffic volume, unauth
 | Slammer Worm Attempt    | Unpatched SQL Server instances vulnerable to buffer overflow exploits.   |
 | Zeus Botnet Activity    | User clicked phishing email attachment, leading to malware installation. |
 
-#### 📘 Lessons Learned
+#### Lessons Learned
 
 - **User awareness is critical** — The Zeus infection originated from human error (email click).
 - **Legacy systems remain a risk** — Slammer exploited outdated SQL infrastructure.
 - **Proactive monitoring** — Earlier detection would have prevented malware persistence.
 - **IOCs must be correlated** — Multi-stage attacks require cross-system visibility and context.
 
-#### ✅ Recommendations
+#### Recommendations
 
 - Implement **network segmentation** to isolate critical assets.
 - Enforce **least privilege access** and remove default or unused service accounts.
@@ -201,13 +218,13 @@ The investigation uncovered a coordinated pattern of probing, malware propagatio
 
 ### Business Impact (Long-term & Short-term)
 
-#### 📉 Short-Term Business Implications
+#### Short-Term Business Implications
 - **Operational Downtime:** Systems may need to be taken offline for patching and forensic analysis.
 - **Resource Disruption:** IT teams are pulled away from other tasks to focus on incident response.
 - **Customer Trust Impact:** Clients may become temporarily concerned if disruptions are public-facing.
 - **Increased Cost:** Emergency response may require third-party consultants or overtime resources.
 
-#### 📈 Long-Term Business Implications
+#### Long-Term Business Implications
 - **Brand and Reputation Damage:** Persistent security issues erode customer trust and industry credibility.
 - **Regulatory Exposure:** Potential compliance violations (e.g., GDPR, HIPAA) may result in audits or fines.
 - **Financial Impact:** Loss of business, legal liabilities, and the cost of upgrading infrastructure.
@@ -228,7 +245,7 @@ The investigation uncovered a coordinated pattern of probing, malware propagatio
 
 ---
 
-## 📚 References
+## References
 
 - [How to protect yourself from the Zeus virus – NordVPN](https://nordvpn.com/blog/zeus-virus/)
 - [Zeus Virus – Kaspersky](https://usa.kaspersky.com/resource-center/threats/zeus-virus)

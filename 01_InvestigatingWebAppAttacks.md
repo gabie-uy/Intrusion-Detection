@@ -1,19 +1,30 @@
 # Investigating Web Application Attacks
 
----
+**OVERVIEW**: A structured approach to examining web app attacks—identifying vulnerabilities, following attack trails, and deploying tools to uncover, analyze, and attribute malicious behavior.
 
-#### Table of Contents
-> 1. Activity
-> 2. Threat Simulation
-> 3. Response
->   - Post-Incident Report
->   - What Does the Enterprise Do Next?
 
----
+#### TABLE OF CONTENTS
 
-A structured approach to examining web app attacks—identifying vulnerabilities, following attack trails, and deploying tools to uncover, analyze, and attribute malicious behavior.
+1. Activity
+   - Review
+   - Exercise (Scripts, Figures, etc.)
+2. Threat Simulation
+   - SOC Report/Post-Incident Report
+     - Incident Summary
+     - Indicators of Compromise
+     - Critical Alerts and Severity Ratings (Alert Name, Description, Detection Method/Query Snippet, Criticality, Rationale)
+     - Actions Taken
+     - Root Cause Analysis
+     - Lessons Learned
+     - Recommendations
+3. Business Implications
+   - Synthesize the Investigation
+   - Long-term and Short-term Risks
+   - Remediation Plan
 
-### Attributes
+## Activity
+
+### Review
 
 - **Timestamp** - Date reference of the transaction
 - **Client IP** - This is the Internet Protocol (IP) address of the client making the request on the web service
@@ -40,11 +51,9 @@ A structured approach to examining web app attacks—identifying vulnerabilities
 
 - **User-Agent String** - A characteristic string that lets servers and network peers identify the application, browser, operating system, vendor, and/or version of the requesting user agent.
 
----
+### Exercise
 
-## Activity
-
-### 1. Filter
+#### 1. Filter
 
 ![image](https://github.com/gabizzle/Intrusion-Detection/assets/67624149/3582db80-6e0a-4460-adb9-4ece0ac0468f)
 
@@ -55,7 +64,7 @@ _Initial log filter targeting Apache access logs from the Labs environment._
 
 - Filters logs to include only those tagged under Labs/Apache/Access, isolating Apache access logs from the Labs environment.
 
- ### 2. Geolocation & ASN Lookup
+ #### 2. Geolocation & ASN Lookup
  
  ![image](https://github.com/gabizzle/Intrusion-Detection/assets/67624149/a058174a-f75e-4050-8db9-8bb58410eb7d)
 
@@ -67,7 +76,7 @@ _Enhances Apache logs by mapping IPs to geographic and organizational data._
 
 - Retrieves geo-location data (e.g., country, city) and ASN (Autonomous System Number) information for each src_ip in the logs.
 
-### 3. Count and Sort by IP Details
+#### 3. Count and Sort by IP Details
 
 ![image](https://github.com/gabizzle/Intrusion-Detection/assets/67624149/a6457449-6229-466d-87f0-a9462f9a33cc)
 
@@ -82,7 +91,7 @@ _Aggregates and ranks requests by source IP and user agent for threat identifica
 - Counts log entries grouped by IP, country, organization, and browser agent.
 - Sorts the results to identify the most frequent sources.
 
-### 4. Shellshock Exploit Detection
+#### 4. Shellshock Exploit Detection
 
 ![image](https://github.com/gabizzle/Intrusion-Detection/assets/67624149/853f2fa0-09da-43ee-8ea3-9ba403d9f501)
 
@@ -98,7 +107,7 @@ _Detects Shellshock-style attacks based on suspicious user agent patterns._
 - Filters user agents matching Shellshock exploit signature.
 - Shows top offending IPs using that pattern. 
 
-### 5. 404 Error Analysis
+#### 5. 404 Error Analysis
 
 ![image](https://github.com/gabizzle/Intrusion-Detection/assets/67624149/c53cdfb3-c7ba-4e65-8cbd-e4b9af2556b2)
 
@@ -113,7 +122,7 @@ _Identifies frequent 404 errors that may indicate reconnaissance or misconfigura
 
 - Focuses on failed requests (404) to detect scanning or broken link activity. 
 
-### 6. Time-based 404 Activity
+#### 6. Time-based 404 Activity
 
 ![image](https://github.com/gabizzle/Intrusion-Detection/assets/67624149/1cebe28d-ede1-43ef-9d9a-2bcb15de70dc)
 
@@ -129,7 +138,7 @@ _Tracks hourly 404 error trends to detect scanning bursts._
 
 - Slices time into hourly buckets to monitor when 404s spike.
 
-### 7. Alert on Excessive 404s
+#### 7. Alert on Excessive 404s
 
 ![image](https://github.com/gabizzle/Intrusion-Detection/assets/67624149/a3aa4b1b-0c66-4f14-a7a0-c907e19b6cb8)
 
@@ -146,7 +155,7 @@ _Alerts on unusually high 404 activity to surface potential threats._
  
 - Flags any IP with more than 20 404 errors in an hour—likely suspicious.
 
-### 8. Excessive Success (200) Detection
+#### 8. Excessive Success (200) Detection
 
 ![image](https://github.com/gabizzle/Intrusion-Detection/assets/67624149/f54006d5-0336-4f88-8387-66e5912be0ca)
 
@@ -164,7 +173,7 @@ _Detects high-volume successful access, possibly indicating abuse or scraping._
 - Monitors for a high number of successful hits (status 200) per minute.
 - Indicates scraping, brute force, or DoS-like behaviors.
 
-### 9. Threat Intelligence Lookup
+#### 9. Threat Intelligence Lookup
 
 ![image](https://github.com/gabizzle/Intrusion-Detection/assets/67624149/769498db-8214-4015-ab76-f2b4cd57bb2b)
 
@@ -175,7 +184,7 @@ _Matches IPs against threat intelligence to detect known malicious actors._
 
 - Enriches log data by checking if the src_ip is linked to known threats.
 
-### 10. Filter Confirmed Threats
+#### 10. Filter Confirmed Threats
 
 ![image](https://github.com/gabizzle/Intrusion-Detection/assets/67624149/8a4d37c4-a156-4c9a-8776-9973c014c7f6)
 
@@ -185,7 +194,6 @@ _Matches IPs against threat intelligence to detect known malicious actors._
 
 - Shows only IPs confirmed to have a threat level assigned.
 
----
 
 ## Threat Simulation 
 
@@ -209,7 +217,16 @@ These alerts indicated that the web application was being targeted by automated 
 | **User-Agent Payload** | `() { :; };` — indicates Shellshock attack signature                                   |
 | **HTTP Status Codes**  | High `404` errors (path discovery), high `200` response rate (scraping or brute force) |
 | **IP Addresses**       | Matched with threat intelligence feeds (`threatlevel` present)                         |
-| **User-Agent Strings** | Repeated non-human user-agents (bots or scripts)                                       |
+| **User-Agent Strings** | Repeated non-human user-agents (bots or scripts)
+
+#### Critical Alerts and Severity Ratings
+
+| Alert Name                      | Description                                                                 | Detection Method / Query Snippet                                  | Criticality | Rationale                                                                                   |
+|--------------------------------|-----------------------------------------------------------------------------|--------------------------------------------------------------------|-------------|---------------------------------------------------------------------------------------------|
+| **Shellshock Exploit Attempt** | Detects command injection via user-agent string resembling Shellshock.     | `user_agent matches "*() { :; }*"`                                 | Critical    | High-risk RCE vulnerability. Exploitation can lead to full system compromise.              |
+| **Excessive 404 Errors**       | Flags reconnaissance attempts via repeated 404 (Not Found) HTTP responses. | `status_code = "404"` + aggregation over `src_ip`, `user_agent`   | High        | Common behavior in vulnerability scanning or directory brute-forcing.                      |
+| **High Volume 200 OK Hits**    | Detects scraping or brute force by identifying high success rates.         | `status_code = "200"` + `where _count > 50`                        | High        | Abnormal success patterns may indicate bot scraping or password spraying attacks.          |
+| **Threat Intelligence Match**  | Matches source IPs against known malicious actors.                         | `lookup ... from sumo://threat/cs` + `where !(isNull(threatlevel))`| Critical    | Involves confirmed threat actors—must be acted on immediately to prevent further intrusion. |                                       |
 
 #### Actions Taken
 
@@ -245,20 +262,9 @@ Implement automated alerting for:
 - Regularly review access logs and update detection rules quarterly.
 - Educate DevOps and security teams on emerging exploit vectors.
 
-### Critical Alerts and Severity Ratings
+## Business Implications
 
-| Alert Name                      | Description                                                                 | Detection Method / Query Snippet                                  | Criticality | Rationale                                                                                   |
-|--------------------------------|-----------------------------------------------------------------------------|--------------------------------------------------------------------|-------------|---------------------------------------------------------------------------------------------|
-| **Shellshock Exploit Attempt** | Detects command injection via user-agent string resembling Shellshock.     | `user_agent matches "*() { :; }*"`                                 | Critical    | High-risk RCE vulnerability. Exploitation can lead to full system compromise.              |
-| **Excessive 404 Errors**       | Flags reconnaissance attempts via repeated 404 (Not Found) HTTP responses. | `status_code = "404"` + aggregation over `src_ip`, `user_agent`   | High        | Common behavior in vulnerability scanning or directory brute-forcing.                      |
-| **High Volume 200 OK Hits**    | Detects scraping or brute force by identifying high success rates.         | `status_code = "200"` + `where _count > 50`                        | High        | Abnormal success patterns may indicate bot scraping or password spraying attacks.          |
-| **Threat Intelligence Match**  | Matches source IPs against known malicious actors.                         | `lookup ... from sumo://threat/cs` + `where !(isNull(threatlevel))`| Critical    | Involves confirmed threat actors—must be acted on immediately to prevent further intrusion. |
-
----
-
-## What Does the Enterprise Do Next?
-
-### Synthesize the Investigation and Its Implications
+### Synthesis
 
 The investigation revealed that the web application was actively being probed and targeted by:
 
@@ -268,6 +274,8 @@ The investigation revealed that the web application was actively being probed an
 - Known malicious IPs (matched via threat intelligence lookup)
 
 These findings indicate a combination of opportunistic and targeted threats, pointing to weaknesses in real-time detection, rate-limiting, and external threat feed integration.
+
+### Long-term & Short-term Risks
 
 ### Remediation Plan
 
